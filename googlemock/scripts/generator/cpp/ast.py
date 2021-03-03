@@ -317,6 +317,9 @@ class Union(_NestedType):
 class Enum(_NestedType):
     pass
 
+class ScopedEnum(_NestedType):
+    pass
+
 
 class Class(_GenericDeclaration):
     def __init__(self, start, end, name, bases, templated_types, body, namespace):
@@ -1264,6 +1267,12 @@ class AstBuilder(object):
         return self._GetNestedType(Union)
 
     def handle_enum(self):
+        # Handle scoped enums, e.g. 'enum class', by ignoring the second keyword
+        temp = self._GetNextToken()
+        next_name = temp.name
+        if next_name == "class" or next_name == "struct":
+            return self._GetNestedType(ScopedEnum)
+        self._AddBackToken(temp)
         return self._GetNestedType(Enum)
 
     def handle_auto(self):
