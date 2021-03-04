@@ -1269,8 +1269,7 @@ class AstBuilder(object):
     def handle_enum(self):
         # Handle scoped enums, e.g. 'enum class', by ignoring the second keyword
         temp = self._GetNextToken()
-        next_name = temp.name
-        if next_name == "class" or next_name == "struct":
+        if temp.name in ["class", "struct"]:
             return self._GetNestedType(ScopedEnum)
         self._AddBackToken(temp)
         return self._GetNestedType(Enum)
